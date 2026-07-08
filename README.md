@@ -1,4 +1,4 @@
-# RepoMedic 🩺
+# RepoMedic 
 
 **Autonomous repository failure investigation and patch verification.**
 
