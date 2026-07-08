@@ -1,0 +1,68 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "repomedic"
+version = "0.1.0"
+description = "Autonomous repository failure investigation and patch verification system"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.11"
+authors = [{ name = "RepoMedic contributors" }]
+keywords = ["debugging", "testing", "root-cause-analysis", "automated-repair"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Debuggers",
+    "Topic :: Software Development :: Quality Assurance",
+]
+dependencies = [
+    "pydantic>=2.5",
+    "networkx>=3.2",
+    "click>=8.1",
+]
+
+[project.optional-dependencies]
+dashboard = [
+    "fastapi>=0.110",
+    "uvicorn>=0.27",
+]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=4.1",
+    "fastapi>=0.110",
+    "uvicorn>=0.27",
+    "httpx>=0.27",
+    "ruff>=0.4",
+]
+
+[project.scripts]
+repomedic = "repomedic.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/repomedic/repomedic"
+
+[tool.hatch.build.targets.wheel]
+packages = ["repomedic"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["ignore::pytest.PytestCollectionWarning"]
+markers = [
+    "docker: tests that require a running Docker daemon",
+    "e2e: full end-to-end pipeline tests",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]

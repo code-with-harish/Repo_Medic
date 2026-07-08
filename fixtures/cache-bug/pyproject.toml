@@ -1,0 +1,8 @@
+[project]
+name = "memocache"
+version = "0.3.1"
+description = "Tiny in-memory cache (intentionally broken RepoMedic fixture)"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

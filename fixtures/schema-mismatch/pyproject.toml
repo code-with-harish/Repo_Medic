@@ -1,0 +1,8 @@
+[project]
+name = "userservice"
+version = "1.2.0"
+description = "Tiny user service (intentionally broken RepoMedic fixture)"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
