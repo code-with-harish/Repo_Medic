@@ -1,4 +1,4 @@
-# RepoMedic — Implementation Plan
+# RepoMedic Implementation Plan
 
 Autonomous repository failure investigation and patch verification system.
 
@@ -61,16 +61,16 @@ Rules enforced by the engine, not convention:
 
 - [x] M0: plan, environment probe
 - [x] M1: package scaffold, pyproject, models, event bus, state machine, SQLite store + unit tests
-- [x] M2: ingest — detector + AST import graph + test-source mapping + tests
-- [x] M3: execution — LocalExecutor, DockerExecutor, pytest parser + tests
-- [x] M4: investigation — provider interface, deterministic heuristics, experiments, confidence updates + tests
-- [x] M5: patch — generator, applier, validator + tests
+- [x] M2: ingest detector + AST import graph + test-source mapping + tests
+- [x] M3: execution LocalExecutor, DockerExecutor, pytest parser + tests
+- [x] M4: investigation provider interface, deterministic heuristics, experiments, confidence updates + tests
+- [x] M5: patch generator, applier, validator + tests
 - [x] M6: fixtures (cache-bug, schema-mismatch), CLI, reports, end-to-end integration test
 - [x] M7: dashboard, Dockerfile, Makefile, CI, README, CONTRIBUTING, LICENSE, docs/architecture.md
 
 ## Progress log
 
-- M0 done: environment probed (Py 3.11 venv — the host's 3.13 launcher entry
+- M0 done: environment probed (Py 3.11 venv the host's 3.13 launcher entry
   is stale; Docker daemon offline, so executors are auto-selected), plan written.
 - M1 done: Pydantic models, event bus, FSM with declared transition table,
   SQLite store. 10 tests.
