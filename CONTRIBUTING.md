@@ -20,7 +20,7 @@ make demo             # investigate both bundled fixture repos
    reports a root cause without recorded `Evidence`, or marks a patch
    `accepted` without validation commands actually running and passing.
    `tests/test_state_machine.py::test_cannot_patch_without_root_cause` and the
-   validator tests enforce this — keep them green.
+   validator tests enforce this keep them green.
 2. **Determinism first.** The `DeterministicInvestigator` must stay fully
    deterministic: same repository in, same hypotheses out. Anything
    heuristic-with-randomness belongs in a new `AgentProvider`.
@@ -51,4 +51,4 @@ the `Executor` interface so isolation guarantees hold.
 
 - `make lint && make test` must pass.
 - New behavior needs tests; bug fixes need a regression test.
-- Keep patches minimal and focused — the same standard RepoMedic holds itself to.
+- Keep patches minimal and focused the same standard RepoMedic holds itself to.
