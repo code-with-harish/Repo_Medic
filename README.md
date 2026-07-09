@@ -5,7 +5,7 @@
 Point RepoMedic at a repository with failing tests. It builds an intelligence
 model of the code, reproduces the failure in an isolated environment, runs a
 hypothesis-driven investigation loop with real verification experiments,
-selects an evidence-backed root cause, generates a minimal patch — and only
+selects an evidence-backed root cause, generates a minimal patch and only
 calls the patch a fix after re-running the original failures *and* the full
 regression suite against a patched copy.
 
@@ -28,7 +28,7 @@ the `AgentProvider` interface without touching the engine.
 
 ## Demo (real output)
 
-Investigating the bundled `fixtures/cache-bug` repository — a small cache
+Investigating the bundled `fixtures/cache-bug` repository a small cache
 library whose tests fail intermittently because `MemoryCache._store` is a
 class-level dict shared by every instance:
 
@@ -48,7 +48,7 @@ $ repomedic investigate fixtures/cache-bug
 [REPORT] .repomedic/reports/session-001.md
 ```
 
-And `fixtures/schema-mismatch` — a user service where a storage-layer refactor
+And `fixtures/schema-mismatch` a user service where a storage-layer refactor
 renamed a dict key the API layer still consumes:
 
 ```console
@@ -121,7 +121,7 @@ flowchart LR
 
 ### Investigation lifecycle
 
-Every run walks an explicit state machine — illegal transitions raise, every
+Every run walks an explicit state machine illegal transitions raise, every
 transition emits a structured event, and `PATCH` is structurally unreachable
 except through `ROOT_CAUSE`:
 
@@ -153,9 +153,9 @@ root-cause hypotheses, each carrying a description, confidence score,
 supporting/contradicting evidence ids, and a proposed verification
 experiment. Two experiment shapes ship today:
 
-- **Isolation re-run** — a test that failed in the full suite is re-run alone.
+- **Isolation re-run** a test that failed in the full suite is re-run alone.
   Passing in isolation is the classic signature of cross-test shared state.
-- **Producer probe** — for a `KeyError` whose missing key closely matches a
+- **Producer probe** for a `KeyError` whose missing key closely matches a
   key some producer function actually returns, the producer is called in the
   sandbox and its returned keys inspected.
 
@@ -170,7 +170,7 @@ from the cache-bug fixture (`.repomedic/reports/session-001.md`):
 
 > ## Hypotheses considered
 >
-> ### H1 — shared_mutable_class_attr (confidence 0.88, status verified)
+> ### H1 shared_mutable_class_attr (confidence 0.88, status verified)
 >
 > class `MemoryCache` in src/cache.py shares mutable class attribute `_store`
 > across all instances; state written by one test leaks into the next
@@ -180,11 +180,11 @@ from the cache-bug fixture (`.repomedic/reports/session-001.md`):
 > - **Supporting evidence:** E5, E6
 > - **Experiment:** run `tests/test_cache.py::test_new_cache_starts_empty`
 >   alone: if it passes in isolation but failed in the full suite, cross-test
->   shared state is confirmed — verdict: `supports`
+>   shared state is confirmed verdict: `supports`
 >
 > ## Root cause
 >
-> **`src/cache.py:15`** — selected from hypothesis **H1** with confidence
+> **`src/cache.py:15`** selected from hypothesis **H1** with confidence
 > **0.88**, backed by evidence E5, E6.
 >
 > ## Patch
@@ -248,8 +248,8 @@ docker run --rm -v /path/to/broken-repo:/target repomedic investigate /target --
 - **Deterministic core, pluggable intelligence.** The investigation engine is
   decoupled from *what proposes hypotheses* via the `AgentProvider` interface
   (two methods: `generate_hypotheses`, `propose_patch`). The bundled provider
-  is a deterministic rule engine, so the entire pipeline — including two full
-  end-to-end fixture investigations — runs in CI with zero network access and
+  is a deterministic rule engine, so the entire pipeline including two full
+  end-to-end fixture investigations runs in CI with zero network access and
   zero flakiness. An LLM provider slots in without touching isolation,
   validation, or reporting.
 - **Explicit FSM over implicit control flow.** The transition table is data;
@@ -259,13 +259,13 @@ docker run --rm -v /path/to/broken-repo:/target repomedic investigate /target --
   and JSON reports; the dashboard and CLI replay are free.
 - **JUnit XML as the execution contract.** Stdout parsing is a fallback only.
   The same parser serves local and Docker executors, and structured
-  `Failure`/`Frame` objects are what heuristics consume — no regex spaghetti
+  `Failure`/`Frame` objects are what heuristics consume no regex spaghetti
   downstream.
 - **Own unified-diff engine.** Patches are applied by RepoMedic's own parser/
   applier (no `patch` binary, works on Windows). All hunks verify against
   context before any file is written, so a stale diff can't half-patch a tree.
-- **Workspaces, not in-place mutation.** Every execution — including the
-  initial reproduction — happens in a disposable copy. E2E tests assert every
+- **Workspaces, not in-place mutation.** Every execution including the
+  initial reproduction happens in a disposable copy. E2E tests assert every
   source file of the investigated repository is byte-identical afterwards;
   the only thing RepoMedic writes into the target is the `.repomedic/`
   directory (reports + session database).
@@ -279,7 +279,7 @@ docker run --rm -v /path/to/broken-repo:/target repomedic investigate /target --
   the intended boundary: fresh container per command, `--network none`,
   memory/CPU/pid caps, non-root user. The local executor is a *convenience
   fallback* (temp copy, scrubbed environment, hard timeout) and provides **no
-  security sandbox** — don't point it at repositories you don't trust.
+  security sandbox** don't point it at repositories you don't trust.
 - Experiments call repository code (e.g. the producer probe). They run only
   inside the executor sandbox, but with `--executor local` that still means
   your machine.
@@ -288,9 +288,9 @@ docker run --rm -v /path/to/broken-repo:/target repomedic investigate /target --
 - The heuristic provider knows three defect families (mutable defaults,
   shared mutable class attributes, renamed-key schema mismatches) plus a
   fallback localizer. It will honestly conclude `FAILED` (inconclusive) on
-  anything else rather than guess — by design.
+  anything else rather than guess by design.
 - Patch templates fix the *producer* side of a schema mismatch (tests encode
-  the contract). If your tests are wrong, the patch will be too — the report
+  the contract). If your tests are wrong, the patch will be too the report
   makes the reasoning explicit so a human can disagree.
 - Test-order-dependent suites are assumed to run deterministically under
   plain `pytest`; random-order plugins will confuse the isolation experiment.
